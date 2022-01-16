@@ -1,6 +1,8 @@
 PROJECT_DIR ?=  $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 TARGET_LIB ?= lib$(shell basename $(PROJECT_DIR)).a
 
+DOCKER_IMAGE ?= $(shell basename $(PROJECT_DIR))_build
+
 BUILD_DIR ?= ./build
 INC_DIR ?= ./inc
 SRC_DIR ?= ./src
@@ -23,6 +25,17 @@ MKDIR_P := mkdir -p
 
 .PHONY: build
 build: $(BUILD_DIR)/$(TARGET_LIB)
+
+.PHONY: build_docker_image
+build_docker_image:
+	docker build . -t $(DOCKER_IMAGE)
+
+.PHONY:
+docker_build: build_docker_image
+	docker run --rm -it \
+		-u $$(id -u):$$(id -g) \
+		-v $$PWD:/build/cvector \
+		$(DOCKER_IMAGE)
 
 $(BUILD_DIR)/$(TARGET_LIB): $(OBJS)
 	$(AR) rcs $@ $(OBJS)
