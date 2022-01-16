@@ -38,6 +38,25 @@ void *vector_new(size_t cap, size_t elem_size) {
   return bodyof(vec);
 }
 
+static size_t sizeof_vector(vector_t *v) {
+  return sizeof(vector_t) + v->cap * v->elem_size;
+}
+
+void *vector_clone(void *vec) {
+  assert(vec != NULL);
+
+  vector_t *v = headerof(vec);
+  size_t size_v = sizeof_vector(v);
+
+  void *clone = malloc(size_v);
+  if (clone == NULL)
+    return NULL;
+
+  memcpy(clone, v, size_v);
+
+  return bodyof(clone);
+}
+
 void vector_free(void *vec) {
   assert(vec != NULL);
 

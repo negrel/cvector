@@ -164,6 +164,26 @@ START_TEST(test_vector_shift) {
 }
 END_TEST
 
+START_TEST(test_vector_clone) {
+  int *vec = vector_new(10, sizeof(int));
+  *vector_push(&vec) = 5;
+  *vector_push(&vec) = 6;
+
+  int *clone = vector_clone(vec);
+  ck_assert_int_eq(clone[0], 5);
+  ck_assert_int_eq(clone[1], 6);
+
+  vector_pop(clone, NULL);
+  ck_assert_int_eq(vector_len(clone), 1);
+
+  ck_assert_int_eq(vector_len(vec), 2);
+  ck_assert_int_eq(vec[1], 6);
+
+  vector_free(clone);
+  vector_free(vec);
+}
+END_TEST
+
 Suite *vector_suite() {
   Suite *s = suite_create("vector");
   TCase *tc_core = tcase_create("Core");
@@ -173,6 +193,7 @@ Suite *vector_suite() {
   tcase_add_test(tc_core, test_vector_pop);
   tcase_add_test(tc_core, test_vector_unshift);
   tcase_add_test(tc_core, test_vector_shift);
+  tcase_add_test(tc_core, test_vector_clone);
   suite_add_tcase(s, tc_core);
 
   return s;

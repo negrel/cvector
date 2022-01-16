@@ -18,7 +18,7 @@
 // the vector.
 void *vector_new(size_t cap, size_t elem_size);
 
-// vector_clone clones the given vector and returns it.
+// vector_clone creates a clone of the given vector and returns it.
 void *vector_clone(void *vec);
 
 // vector_len returns the current len of the vector.
