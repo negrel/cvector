@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../inc/vector.h"
+#include "nds_vector.h"
 
 #define container_of(ptr, type, member)                                        \
   ({                                                                           \
@@ -10,10 +10,10 @@
     (type *)((char *)__mptr - offsetof(type, member));                         \
   })
 
-#define bodyof(vecptr) ((void *)(vecptr) + sizeof(vector_t))
-#define headerof(bodyptr) ((vector_t *)(bodyptr - sizeof(vector_t)))
+#define bodyof(vecptr) ((void *)(vecptr) + sizeof(struct vector))
+#define headerof(bodyptr) ((struct vector *)(bodyptr - sizeof(struct vector)))
 
-typedef struct {
+struct vector {
   // Header
   size_t cap;
   size_t len;
@@ -21,13 +21,13 @@ typedef struct {
 
   // Body
   // ...
-} vector_t;
+};
 
-void *vector_new(size_t cap, size_t elem_size) {
-  size_t header = sizeof(vector_t);
+vector_t nds_vector_new(size_t cap, size_t elem_size) {
+  size_t header = sizeof(struct vector);
   size_t body = cap * elem_size;
 
-  vector_t *vec = calloc(header + body, 1);
+  struct vector *vec = calloc(header + body, 1);
   if (vec == NULL)
     return NULL;
 
@@ -38,14 +38,14 @@ void *vector_new(size_t cap, size_t elem_size) {
   return bodyof(vec);
 }
 
-static size_t sizeof_vector(vector_t *v) {
-  return sizeof(vector_t) + v->cap * v->elem_size;
+static size_t sizeof_vector(struct vector *v) {
+  return sizeof(struct vector) + v->cap * v->elem_size;
 }
 
-void *vector_clone(void *vec) {
+vector_t nds_vector_clone(vector_t vec) {
   assert(vec != NULL);
 
-  vector_t *v = headerof(vec);
+  struct vector *v = headerof(vec);
   size_t size_v = sizeof_vector(v);
 
   void *clone = malloc(size_v);
@@ -57,46 +57,46 @@ void *vector_clone(void *vec) {
   return bodyof(clone);
 }
 
-void vector_free(void *vec) {
+void nds_vector_free(vector_t vec) {
   assert(vec != NULL);
 
-  vector_t *v = headerof(vec);
+  struct vector *v = headerof(vec);
   free(v);
 }
 
-size_t vector_len(void *vec) {
+size_t nds_vector_len(vector_t vec) {
   assert(vec != NULL);
 
   return headerof(vec)->len;
 }
 
-size_t vector_cap(void *vec) {
+size_t nds_vector_cap(vector_t vec) {
   assert(vec != NULL);
 
   return headerof(vec)->cap;
 }
 
-bool vector_isfull(void *vec) {
+bool nds_vector_isfull(vector_t vec) {
   assert(vec != NULL);
 
-  return vector_len(vec) == vector_cap(vec);
+  return nds_vector_len(vec) == nds_vector_cap(vec);
 }
 
-bool vector_isempty(vector_t *vec) {
+bool nds_vector_isempty(vector_t *vec) {
   assert(vec != NULL);
 
-  return vector_len(vec) == 0;
+  return nds_vector_len(vec) == 0;
 }
 
-void *vector_push_(void **vec) {
+void *nds_vector_push_(void **vec) {
   assert(vec != NULL);
   assert(*vec != NULL);
 
-  if (vector_isfull(*vec)) {
+  if (nds_vector_isfull(*vec)) {
     // Let's double the capacity of our vector
-    vector_t *old = headerof(*vec);
+    struct vector *old = headerof(*vec);
 
-    void *new = vector_new(old->cap * 2, old->elem_size);
+    void *new = nds_vector_new(old->cap * 2, old->elem_size);
     headerof(new)->len = old->len;
 
     memcpy(new, bodyof(old), old->cap * old->elem_size);
@@ -105,7 +105,7 @@ void *vector_push_(void **vec) {
     *vec = new;
   }
 
-  vector_t *v = headerof(*vec);
+  struct vector *v = headerof(*vec);
   size_t offset = v->elem_size * v->len;
 
   v->len++;
@@ -113,26 +113,26 @@ void *vector_push_(void **vec) {
   return bodyof(v) + offset;
 }
 
-void vector_pop(void *vec, void *popped) {
+void nds_vector_pop(vector_t vec, void *popped) {
   assert(vec != NULL);
 
-  if (vector_isempty(vec))
+  if (nds_vector_isempty(vec))
     return;
 
-  vector_t *v = headerof(vec);
+  struct vector *v = headerof(vec);
   v->len--;
 
   if (popped != NULL)
     memcpy(popped, vec + v->len * v->elem_size, v->elem_size);
 }
 
-void vector_shift(void *vec, void *shifted) {
+void nds_vector_shift(vector_t vec, void *shifted) {
   assert(vec != NULL);
 
-  if (vector_isempty(vec))
+  if (nds_vector_isempty(vec))
     return;
 
-  vector_t *v = headerof(vec);
+  struct vector *v = headerof(vec);
   if (shifted != NULL)
     memcpy(shifted, vec, v->elem_size);
 
@@ -141,15 +141,15 @@ void vector_shift(void *vec, void *shifted) {
   memmove(bodyof(v), bodyof(v) + v->elem_size, v->len * v->elem_size);
 }
 
-void *vector_unshift_(void **vec) {
+void *nds_vector_unshift_(void **vec) {
   assert(vec != NULL);
   assert(*vec != NULL);
 
-  if (vector_isfull(*vec)) {
+  if (nds_vector_isfull(*vec)) {
     // Let's double the capacity of our vector
-    vector_t *old = headerof(*vec);
+    struct vector *old = headerof(*vec);
 
-    void *new = vector_new(old->cap * 2, old->elem_size);
+    void *new = nds_vector_new(old->cap * 2, old->elem_size);
     headerof(new)->len = old->len + 1;
 
     // Copy old elements in new at index 1
@@ -161,7 +161,7 @@ void *vector_unshift_(void **vec) {
     return new;
   }
 
-  vector_t *v = headerof(*vec);
+  struct vector *v = headerof(*vec);
   // Move all elements by 1
   memmove(*vec + v->elem_size, *vec, v->len * v->elem_size);
   v->len++;

@@ -1,4 +1,4 @@
-PROJECT_DIR ?=  $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+PROJECT_DIR ?= $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 TARGET_LIB ?= lib$(shell basename $(PROJECT_DIR)).a
 
 DOCKER_IMAGE ?= $(shell basename $(PROJECT_DIR))_build
@@ -13,8 +13,9 @@ SRCS := $(shell find $(SRC_DIR) -regex '.+\.c')
 OBJS := $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
-CC := clang
-CFLAGS := -Wall -I$(INC_DIR) -I$$PWD
+CC ?= clang
+CFLAGS ?=
+CFLAGS := $(CFLAGS) -Wall -I$(INC_DIR) -I$$PWD
 TEST_CFLAGS := -Wall -I$(INC_DIR) -I$$PWD
 TEST_LDFLAGS := $(shell pkg-config --cflags --libs check)
 

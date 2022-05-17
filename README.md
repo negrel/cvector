@@ -1,7 +1,6 @@
-# CVector
+# NDS
 
-An implementation of vectors in C.
-Vectors are sequence containers representing arrays that can change in size.
+Simple data structure library in C.
 
 ## Build the library
 
