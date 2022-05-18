@@ -36,6 +36,42 @@ nds_dllist_node_t *nds_dllist_pop(nds_dllist_t *list) {
   return popped;
 }
 
+size_t nds_dllist_unshift(nds_dllist_t *list, nds_dllist_node_t *node) {
+  if (list->head)
+    list->head->prev = node;
+  else
+    list->tail = node;
+
+  node->next = list->head;
+  list->head = node;
+
+  return ++list->length;
+}
+
+nds_dllist_node_t *nds_dllist_shift(nds_dllist_t *list) {
+  nds_dllist_node_t *shifted = list->head;
+  nds_dllist_remove(list, list->head);
+
+  return shifted;
+}
+
+size_t nds_dllist_insert_before(nds_dllist_t *list, nds_dllist_node_t *node,
+                                nds_dllist_node_t *reference) {
+  if (reference == NULL)
+    return nds_dllist_push(list, node);
+
+  if (reference->prev)
+    reference->prev->next = node;
+  else
+    list->head = node;
+
+  node->prev = reference->prev;
+  reference->prev = node;
+  node->next = reference;
+
+  return ++list->length;
+}
+
 nds_dllist_node_t *nds_dllist_remove(nds_dllist_t *list, nds_dllist_node_t *node) {
   if (node == list->head)
     list->head = node->next;

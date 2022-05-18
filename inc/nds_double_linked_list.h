@@ -25,6 +25,13 @@ size_t nds_dllist_push(nds_dllist_t *list, nds_dllist_node_t *node);
 
 nds_dllist_node_t *nds_dllist_pop(nds_dllist_t *list);
 
+size_t nds_dllist_unshift(nds_dllist_t *list, nds_dllist_node_t *node);
+
+nds_dllist_node_t *nds_dllist_shift(nds_dllist_t *list);
+
+size_t nds_dllist_insert_before(nds_dllist_t *list, nds_dllist_node_t *node,
+                                nds_dllist_node_t *reference);
+
 nds_dllist_node_t *nds_dllist_remove(nds_dllist_t *list, nds_dllist_node_t *node);
 
 #endif
