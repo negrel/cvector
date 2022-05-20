@@ -184,6 +184,35 @@ START_TEST(test_nds_vector_clone) {
 }
 END_TEST
 
+START_TEST(test_nds_vector_foreach) {
+  int *vec = nds_vector_new(10, sizeof(int));
+  *nds_vector_push(&vec) = 5;
+  *nds_vector_push(&vec) = 6;
+  *nds_vector_push(&vec) = 8;
+
+  size_t i = 0;
+  nds_vector_foreach(vec, it) {
+    switch (it.index) {
+      case 0:
+        ck_assert_int_eq(5, it.value);
+        break;
+
+      case 1:
+        ck_assert_int_eq(6, it.value);
+        break;
+
+      default:
+        continue;
+    }
+    i++;
+  }
+
+  ck_assert_uint_eq(2, i);
+
+  nds_vector_free(vec);
+}
+END_TEST
+
 Suite *nds_vector_suite() {
   Suite *s = suite_create("vector");
   TCase *tc_core = tcase_create("Core");
@@ -194,6 +223,7 @@ Suite *nds_vector_suite() {
   tcase_add_test(tc_core, test_nds_vector_unshift);
   tcase_add_test(tc_core, test_nds_vector_shift);
   tcase_add_test(tc_core, test_nds_vector_clone);
+  tcase_add_test(tc_core, test_nds_vector_foreach);
   suite_add_tcase(s, tc_core);
 
   return s;

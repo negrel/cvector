@@ -7,6 +7,13 @@
 
 typedef void *nds_vector_t;
 
+// nds_vector_foreach is a foreach macro for the vector type.
+// The first parameter is the vector on which to iterate. The
+// second is the name of the iterator. The index is accessible
+// with `iterator.index` and the value with `iterator.value`.
+#define nds_vector_foreach(vec, iterator) \
+  for (struct { size_t index; typeof(*vec) value; } iterator = { .value = vec[0] }; iterator.index < nds_vector_len(vec); iterator.value = vec[++iterator.index])
+
 // nds_vector_push returns a pointer to an element at the end of the vector.
 // This function takes a double pointer to a vector to reallocate it's full.
 #define nds_vector_push(vec) ((typeof(*vec))nds_vector_push_((void **)vec))
