@@ -3,7 +3,7 @@
 
 #include <check.h>
 
-#include "nds_double_linked_list.h"
+#include "double_linked_list.h"
 
 START_TEST(test_nds_dllist_node_new) {
   time_t t = time(NULL);

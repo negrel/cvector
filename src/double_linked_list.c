@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "nds_double_linked_list.h"
+#include "double_linked_list.h"
 
 nds_dllist_node_t *nds_dllist_node_new(void *value) {
   nds_dllist_node_t *node =

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "nds_vector.h"
+#include "vector.h"
 
 #define container_of(ptr, type, member)                                        \
   ({                                                                           \

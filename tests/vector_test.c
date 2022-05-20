@@ -2,7 +2,7 @@
 
 #include <check.h>
 
-#include "nds_vector.h"
+#include "vector.h"
 
 START_TEST(test_nds_vector_new) {
   int *vec = nds_vector_new(10, sizeof(int));
