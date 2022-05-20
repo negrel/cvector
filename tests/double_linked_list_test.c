@@ -240,6 +240,49 @@ START_TEST(test_nds_dllist_list_insert_before) {
   nds_dllist_node_free(node3);
 }
 
+START_TEST(test_nds_dllist_foreach) {
+  nds_dllist_node_t *node0 = nds_dllist_node_new(NULL);
+  nds_dllist_node_t *node1 = nds_dllist_node_new(NULL);
+  nds_dllist_node_t *node2 = nds_dllist_node_new(NULL);
+  nds_dllist_node_t *node3 = nds_dllist_node_new(NULL);
+
+  nds_dllist_t list = {};
+
+  nds_dllist_push(&list, node0);
+  nds_dllist_push(&list, node1);
+  nds_dllist_push(&list, node2);
+  nds_dllist_push(&list, node3);
+
+  size_t i = 0;
+  nds_dllist_foreach(&list, elem) {
+    switch (i) {
+      case 0:
+        ck_assert_ptr_eq(node0, elem);
+        break;
+
+      case 1:
+        ck_assert_ptr_eq(node1, elem);
+        break;
+
+      case 2:
+        ck_assert_ptr_eq(node2, elem);
+        break;
+
+      case 3:
+        ck_assert_ptr_eq(node3, elem);
+        break;
+    }
+    i++;
+  }
+
+  ck_assert_uint_eq(4, i);
+
+  nds_dllist_node_free(node0);
+  nds_dllist_node_free(node1);
+  nds_dllist_node_free(node2);
+  nds_dllist_node_free(node3);
+}
+
 Suite *nds_double_linked_list_suite() {
   Suite *s = suite_create("double_linked_list");
   TCase *tc_core = tcase_create("Core");
@@ -251,6 +294,7 @@ Suite *nds_double_linked_list_suite() {
   tcase_add_test(tc_core, test_nds_dllist_list_shift);
   tcase_add_test(tc_core, test_nds_dllist_list_remove);
   tcase_add_test(tc_core, test_nds_dllist_list_insert_before);
+  tcase_add_test(tc_core, test_nds_dllist_foreach);
   suite_add_tcase(s, tc_core);
 
   return s;

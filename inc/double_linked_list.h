@@ -3,8 +3,8 @@
 
 #include <stddef.h>
 
-#define nds_dllist_foreach (list, elem) \
-  for (nds_dllist_node_t elem = list->head; elem != NULL; elem = elem->next)
+#define nds_dllist_foreach(list, elem) \
+  for (nds_dllist_node_t *elem = (list)->head; elem != NULL; elem = elem->next)
 
 typedef struct nds_dllist_node_t {
   struct nds_dllist_node_t *next;
