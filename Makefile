@@ -1,28 +1,6 @@
-PROJECT_DIR ?= $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-TARGET_LIB ?= lib$(shell basename $(PROJECT_DIR)).a
+-include variables.mk
 
-DOCKER_IMAGE ?= $(shell basename $(PROJECT_DIR))_build
-
-BUILD_DIR ?= ./build
-INC_DIR ?= ./inc
-SRC_DIR ?= ./src
-TEST_DIR ?= ./tests
-
-INCS := $(shell find $(INC_DIR) -regex '.+\.h')
-SRCS := $(shell find $(SRC_DIR) -regex '.+\.c')
-OBJS := $(SRCS:%.c=$(BUILD_DIR)/%.o)
-DEPS := $(OBJS:.o=.d)
-
-CC ?= clang
-CFLAGS ?=
-CFLAGS := $(CFLAGS) -Wall -I$(INC_DIR) -I$$PWD
-TEST_CFLAGS := -Wall -I$(INC_DIR) -I$$PWD
-TEST_LDFLAGS := $(shell pkg-config --cflags --libs check)
-
-AR := ar
-
-MKDIR := mkdir
-MKDIR_P := mkdir -p
+debug: $(LIBS)
 
 .PHONY: build
 build: $(BUILD_DIR)/$(TARGET_LIB)
@@ -53,8 +31,10 @@ $(BUILD_DIR)/$(TEST_DIR)/%: $(TEST_DIR)/%.c $(BUILD_DIR)/$(TARGET_LIB)
 test/%: $(BUILD_DIR)/$(TEST_DIR)/%_test
 	$<
 
+$(BUILD_DIR)/$(LIB_DIR)/%: $(LIB_DIR)/%
+	$(MKDIR_P) $@
+	BUILD_DIR=$(abspath $@) $(MAKE) -C $< build
+
 .PHONY: clean
 clean:
 	$(RM) -r $(BUILD_DIR)
-
--include $(DEPS)
