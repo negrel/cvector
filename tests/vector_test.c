@@ -193,16 +193,16 @@ START_TEST(test_nds_vector_foreach) {
   size_t i = 0;
   nds_vector_foreach(vec, it) {
     switch (it.index) {
-      case 0:
-        ck_assert_int_eq(5, it.value);
-        break;
+    case 0:
+      ck_assert_int_eq(5, it.value);
+      break;
 
-      case 1:
-        ck_assert_int_eq(6, it.value);
-        break;
+    case 1:
+      ck_assert_int_eq(6, it.value);
+      break;
 
-      default:
-        continue;
+    default:
+      continue;
     }
     i++;
   }

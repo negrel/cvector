@@ -256,21 +256,21 @@ START_TEST(test_nds_dllist_foreach) {
   size_t i = 0;
   nds_dllist_foreach(&list, elem) {
     switch (i) {
-      case 0:
-        ck_assert_ptr_eq(node0, elem);
-        break;
+    case 0:
+      ck_assert_ptr_eq(node0, elem);
+      break;
 
-      case 1:
-        ck_assert_ptr_eq(node1, elem);
-        break;
+    case 1:
+      ck_assert_ptr_eq(node1, elem);
+      break;
 
-      case 2:
-        ck_assert_ptr_eq(node2, elem);
-        break;
+    case 2:
+      ck_assert_ptr_eq(node2, elem);
+      break;
 
-      case 3:
-        ck_assert_ptr_eq(node3, elem);
-        break;
+    case 3:
+      ck_assert_ptr_eq(node3, elem);
+      break;
     }
     i++;
   }

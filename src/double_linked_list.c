@@ -13,9 +13,7 @@ nds_dllist_node_t *nds_dllist_node_new(void *value) {
   return node;
 }
 
-void nds_dllist_node_free(nds_dllist_node_t *node) {
-  free(node);
-}
+void nds_dllist_node_free(nds_dllist_node_t *node) { free(node); }
 
 size_t nds_dllist_push(nds_dllist_t *list, nds_dllist_node_t *node) {
   if (list->tail)
@@ -72,7 +70,8 @@ size_t nds_dllist_insert_before(nds_dllist_t *list, nds_dllist_node_t *node,
   return ++list->length;
 }
 
-nds_dllist_node_t *nds_dllist_remove(nds_dllist_t *list, nds_dllist_node_t *node) {
+nds_dllist_node_t *nds_dllist_remove(nds_dllist_t *list,
+                                     nds_dllist_node_t *node) {
   if (node == list->head)
     list->head = node->next;
   else if (node->prev)
