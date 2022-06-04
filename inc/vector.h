@@ -11,8 +11,23 @@ typedef void *nds_vector_t;
 // The first parameter is the vector on which to iterate. The
 // second is the name of the iterator. The index is accessible
 // with `iterator.index` and the value with `iterator.value`.
-#define nds_vector_foreach(vec, iterator) \
-  for (struct { size_t index; typeof(*vec) value; } iterator = { .value = vec[0] }; iterator.index < nds_vector_len(vec); iterator.value = vec[++iterator.index])
+#define nds_vector_foreach(vec, iterator)                                      \
+  for (struct {                                                                \
+         size_t index;                                                         \
+         typeof(*vec) value;                                                   \
+       } iterator = {.value = vec[0]};                                         \
+       iterator.index < nds_vector_len(vec);                                   \
+       iterator.value = vec[++iterator.index])
+
+// nds_vector_foreach_ptr does the same as nds_vector_foreach
+// but the iterator contains a ptr instead of a copy.
+#define nds_vector_foreach_ptr(vec, iterator)                                  \
+  for (struct {                                                                \
+         size_t index;                                                         \
+         typeof(vec) value;                                                    \
+       } iterator = {.value = &vec[0]};                                        \
+       iterator.index < nds_vector_len(vec);                                   \
+       iterator.value = &vec[++iterator.index])
 
 // nds_vector_push returns a pointer to an element at the end of the vector.
 // This function takes a double pointer to a vector to reallocate it's full.
@@ -20,7 +35,8 @@ typedef void *nds_vector_t;
 
 // nds_vector_unshift adds an element at the beginning of the vector and shift
 // other elements.
-#define nds_vector_unshift(vec) ((typeof(*vec))nds_vector_unshift_((void **)vec))
+#define nds_vector_unshift(vec)                                                \
+  ((typeof(*vec))nds_vector_unshift_((void **)vec))
 
 // nds_vector_new returns a new zeroed vector with the given capacity to store
 // element of the given size. It the returns a pointer to the first element of
@@ -48,12 +64,12 @@ bool nds_vector_isemtpy(nds_vector_t);
 // return type.
 void *nds_vector_push_(nds_vector_t *);
 
-// nds_vector_pop removes the last element of the vector and store it in popped if
-// not null.
+// nds_vector_pop removes the last element of the vector and store it in popped
+// if not null.
 void nds_vector_pop(nds_vector_t, void *);
 
-// nds_vector_shift removes the first element of the vector and store it shifted if
-// not null. Remaining elements are copied to their index - 1.
+// nds_vector_shift removes the first element of the vector and store it shifted
+// if not null. Remaining elements are copied to their index - 1.
 void nds_vector_shift(nds_vector_t, void *);
 
 // nds_vector_unshift_ adds an element at the beginning of the vector and shift
