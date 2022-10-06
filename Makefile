@@ -1,7 +1,5 @@
 -include variables.mk
 
-debug: $(LIBS)
-
 .PHONY: build
 build: $(BUILD_DIR)/$(TARGET_LIB)
 
@@ -35,6 +33,11 @@ $(BUILD_DIR)/$(LIB_DIR)/%: $(LIB_DIR)/%
 	$(MKDIR_P) $@
 	BUILD_DIR=$(abspath $@) $(MAKE) -C $< build
 
+.PHONY: compile_flags.txt
+compile_flags.txt:
+	echo $(CFLAGS) | tr ' ' '\n' > compile_flags.txt
+
 .PHONY: clean
 clean:
 	$(RM) -r $(BUILD_DIR)
+
